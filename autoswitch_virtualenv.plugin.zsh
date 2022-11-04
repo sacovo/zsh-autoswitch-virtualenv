@@ -322,34 +322,33 @@ function mkvenv()
         fi
 
         if [[ -f "$AUTOSWITCH_FILE" ]]; then
-            printf "$AUTOSWITCH_FILE file already exists. If this is a mistake use the rmvenv command\n"
+            local venv_name="$(<$AUTOSWITCH_FILE)"
         else
             local venv_name="$(basename $PWD)-$(randstr)"
-
-            printf "Creating ${PURPLE}%s${NONE} virtualenv\n" "$venv_name"
-
-
-            if [[ -n "$AUTOSWITCH_DEFAULT_PYTHON" && ${params[(I)--python*]} -eq 0 ]]; then
-                printf "${PURPLE}"
-                printf 'Using $AUTOSWITCH_DEFAULT_PYTHON='
-                printf "$AUTOSWITCH_DEFAULT_PYTHON"
-                printf "${NONE}\n"
-                params+="--python=$AUTOSWITCH_DEFAULT_PYTHON"
-            fi
-
-            if [[ ${params[(I)--verbose]} -eq 0 ]]; then
-                virtualenv $params "$(_virtual_env_dir "$venv_name")"
-            else
-                virtualenv $params "$(_virtual_env_dir "$venv_name")" > /dev/null
-            fi
-
-            printf "$venv_name\n" > "$AUTOSWITCH_FILE"
-            chmod 600 "$AUTOSWITCH_FILE"
-
-            _maybeworkon "$(_virtual_env_dir "$venv_name")" "virtualenv"
-
-            install_requirements
         fi
+        printf "Creating ${PURPLE}%s${NONE} virtualenv\n" "$venv_name"
+
+
+        if [[ -n "$AUTOSWITCH_DEFAULT_PYTHON" && ${params[(I)--python*]} -eq 0 ]]; then
+            printf "${PURPLE}"
+            printf 'Using $AUTOSWITCH_DEFAULT_PYTHON='
+            printf "$AUTOSWITCH_DEFAULT_PYTHON"
+            printf "${NONE}\n"
+            params+="--python=$AUTOSWITCH_DEFAULT_PYTHON"
+        fi
+
+        if [[ ${params[(I)--verbose]} -eq 0 ]]; then
+            virtualenv $params "$(_virtual_env_dir "$venv_name")"
+        else
+            virtualenv $params "$(_virtual_env_dir "$venv_name")" > /dev/null
+        fi
+
+        printf "$venv_name\n" > "$AUTOSWITCH_FILE"
+        chmod 600 "$AUTOSWITCH_FILE"
+
+        _maybeworkon "$(_virtual_env_dir "$venv_name")" "virtualenv"
+
+        install_requirements
     fi
 }
 
