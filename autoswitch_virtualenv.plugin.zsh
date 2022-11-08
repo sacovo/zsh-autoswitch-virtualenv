@@ -108,6 +108,8 @@ function _maybeworkon() {
             export PIPENV_VERBOSITY=-1
         fi
 
+        export JUPYTER_CONFIG_DIR=$(pwd)/.jupyter
+
         # Much faster to source the activate file directly rather than use the `workon` command
         local activate_script="$venv_dir/bin/activate"
 
